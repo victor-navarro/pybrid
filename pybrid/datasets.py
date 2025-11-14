@@ -1,7 +1,7 @@
 """Datasets module"""
 
 import os
-from typing import List
+from typing import List, Tuple, Optional
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -386,7 +386,12 @@ def _preprocess_batch(batch):
 
 
 def _get_transform(
-    normalize=True, mean=(0.5), std=(0.5), noisify=False, noise_mean=1, noise_std=0.1
+    normalize=True,
+    mean=(0.5),
+    std=(0.5),
+    noisify=False,
+    noise_mean: float = 1.0,
+    noise_std: float = 0.1,
 ):
     transform = [transforms.ToTensor()]
     if normalize:

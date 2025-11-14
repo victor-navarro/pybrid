@@ -1,4 +1,4 @@
-""" A module with different tests for DoubleAmortModel models """
+"""A module with different tests for DoubleAmortModel models"""
 
 import torch
 import numpy as np

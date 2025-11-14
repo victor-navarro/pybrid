@@ -5,6 +5,6 @@ setuptools.setup(
     version="0.0.1",
     description=("Hybrid inference: Inferring fast and slow"),
     license="MIT License",
-    url="https://github.com/alec-tschantz/pybrid/",
+    url="https://github.com/victor-navarro/pybrid/",
     packages=["pybrid", "pybrid.models"],
 )
