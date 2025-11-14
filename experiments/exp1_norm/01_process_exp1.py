@@ -10,13 +10,13 @@ from pybrid import utils
 
 
 TEST_ITERS = 100
-GET_ACCURACY = False
-GET_PROBS = False
-DO_RECONSTRUCTION = False
-EXTRACT_FEATURES = False
+GET_ACCURACY = True
+GET_PROBS = True
+DO_RECONSTRUCTION = True
+EXTRACT_FEATURES = True
 
 
-def process_exp(output_dir: str, seeds: List[int]):
+def process_exp(output_dir: str, seeds: List[int]) -> None:
     """Process the results of experiment 1."""
     prog_folder = os.path.join(output_dir, "exp_1_norm/progenitor")
     normal_folder = os.path.join(output_dir, "exp_1_norm/normal_twin")

@@ -1,3 +1,5 @@
+"""Readout network module."""
+
 import torch
 from torch import nn
 

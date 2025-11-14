@@ -1,4 +1,4 @@
-""" Runs experiment 1 for CEMNIST. """
+"""Runs experiment 1 for c-EMNIST."""
 
 import os
 from typing import List
@@ -8,15 +8,25 @@ from pybrid.config import DefaultConfig
 from pybrid.utils import get_mapping
 
 
-def run_exp(output_dir: str, seeds: List[int]):
+def run_exp(output_dir: str, seeds: List[int]) -> None:
     """Run experiment 1.
 
     The progenitor model is trained with supervised, frozen class-labels.
 
+    This corresponds to the initial training period in our paper.
+
     The twin models are trained with with amortized, frozen class-labels.
+
+    This corresponds to the self-supervised period in our paper.
+
+    Args:
+        output_dir (str): the output directory where results are saved.
+        seeds (List[int]): list of random seeds to use.
+
     """
     # NOTE: Each twin experiment involves the training of a progenitor model
     # and two twin models.
+
     # The progenitor model is trained on the original dataset.
     # The normal twin model is trained on the original dataset.
     # The swapped twin model is trained on a dataset where the superordinate labels

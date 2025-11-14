@@ -1,4 +1,4 @@
-"""Process the results of experiment 1."""
+"""Plot error surface for experiment 1."""
 
 from typing import List
 import os
@@ -22,11 +22,7 @@ NORMALIZE = False  # whether to normalize error to [0, 1] range
 DPI = 300
 
 # define labels
-labels = {
-    "hybrid": "Amort+Inf",
-    "pc": "Inf",
-    "amort": "Amort"
-}
+labels = {"hybrid": "Amort+Inf", "pc": "Inf", "amort": "Amort"}
 
 # define colour dict
 colours = {
@@ -40,7 +36,8 @@ NRG_MIN = 0.30
 NRG_MAX = 0.35
 # covers about 90% of the data
 
-def plot_exp(seeds: List[int]):
+
+def plot_exp(seeds: List[int]) -> None:
     """Process the results of experiment 1."""
     for twin in ["normal_twin", "swapped_twin"]:
         all_data = pd.DataFrame()
@@ -52,7 +49,7 @@ def plot_exp(seeds: List[int]):
                 data = pd.read_csv(os.path.join(folder, csv_file), low_memory=False)
                 # add epoch
                 data["epoch"] = int(csv_file.split(".")[0])
-                # add seed 
+                # add seed
                 data["seed"] = seed
                 # filter
                 data = data[data["epoch"].isin(EPOCHS)]  # filter for epochs
@@ -80,13 +77,15 @@ def plot_exp(seeds: List[int]):
             # apply PCA
             pca = PCA(n_components=2)
             red_labels = pca.fit_transform(unique_labels)
-    
+        else:
+            raise ValueError("Reduction method not recognized.")
+
         red_df = pd.DataFrame(red_labels, columns=["d1", "d2"])
         # add label names
         red_df["name"] = unique_data["name"].values
         # add columns to all_data
-        all_data = all_data.merge(red_df, left_on="name", right_on="name", how="left")        
-        
+        all_data = all_data.merge(red_df, left_on="name", right_on="name", how="left")
+
         # now we create the plots
         fig, ax = plt.subplots(len(EPOCHS), 1, figsize=FIGSIZE, layout="constrained")
         # get min and max of pca space
@@ -94,77 +93,85 @@ def plot_exp(seeds: List[int]):
         pca_max = all_data[["d1", "d2"]].max().max() + 0.1
 
         for ei, epoch in enumerate(EPOCHS):
-            #plot the PCA results as a mesh in 3D
+            # plot the PCA results as a mesh in 3D
             epoch_data = all_data[all_data["epoch"] == epoch].copy()
             # normalize error if needed
             if NORMALIZE:
                 min_error = 0
                 max_error = 1
-                epoch_data["error"] = (epoch_data["error"] - epoch_data["error"].min()) / (epoch_data["error"].max() - epoch_data["error"].min())
-                
+                epoch_data["error"] = (
+                    epoch_data["error"] - epoch_data["error"].min()
+                ) / (epoch_data["error"].max() - epoch_data["error"].min())
+
             else:
                 min_error = NRG_MIN
                 max_error = NRG_MAX
 
             if MESH:
                 step = (pca_max - pca_min) / 30
-                grid = [np.arange(pca_min, pca_max, step), np.arange(pca_min, pca_max, step)]
+                grid = [
+                    np.arange(pca_min, pca_max, step),
+                    np.arange(pca_min, pca_max, step),
+                ]
                 bin_dat = stats.binned_statistic_2d(
-                    epoch_data["d1"], 
-                    epoch_data["d2"], 
+                    epoch_data["d1"],
+                    epoch_data["d2"],
                     values=epoch_data["error"],
                     statistic="mean",
-                    bins=grid
+                    bins=grid,
                 )
                 z = bin_dat.statistic
                 # mask
                 z = np.ma.masked_invalid(z)
-                x,y = np.meshgrid(grid[0], grid[1])
+                x, y = np.meshgrid(grid[0], grid[1])
                 mesh = ax[ei].pcolor(
-                    x, y, z.T,
-                    vmin=min_error,
-                    vmax=max_error,
-                    cmap=CMAP)
+                    x, y, z.T, vmin=min_error, vmax=max_error, cmap=CMAP
+                )
             else:
                 # plot the points
                 mesh = ax[ei].scatter(
-                    epoch_data["d1"], 
-                    epoch_data["d2"], 
+                    epoch_data["d1"],
+                    epoch_data["d2"],
                     c=epoch_data["error"],
                     cmap=CMAP,
                     vmin=min_error,
                     vmax=max_error,
-                    s=50, 
-                    linewidth=0.5
+                    s=50,
+                    linewidth=0.5,
                 )
-            
+
             # select class labels from the epoch_data
-            class_dat = epoch_data[epoch_data["name"].str.startswith("rand-") == False]
+            class_dat = epoch_data[~epoch_data["name"].str.startswith("rand-")]
             # now annotate the class labels on the plot
             for _, row in class_dat.iterrows():
                 txt = ax[ei].text(
-                    row["d1"], 
-                    row["d2"], 
-                    row["name"], 
+                    row["d1"],
+                    row["d2"],
+                    row["name"],
                     color="white",
                     fontsize=16,
-                    zorder=10, 
+                    zorder=10,
                     ha="center",
                 )
-                txt.set_path_effects([path_effects.Stroke(linewidth=2, foreground='black'),
-                       path_effects.Normal()])
+                txt.set_path_effects(
+                    [
+                        path_effects.Stroke(linewidth=2, foreground="black"),
+                        path_effects.Normal(),
+                    ]
+                )
             # remove the axes ticks
             ax[ei].set_xticks([])
             ax[ei].set_yticks([])
             # set ylabel
             ax[ei].set_ylabel(f"Batch {(epoch+1)*56}")
 
-        cbar = fig.colorbar(mesh, ax=ax[1], orientation='vertical')
+        cbar = fig.colorbar(mesh, ax=ax[1], orientation="vertical")
         cbar.set_label("Total Error")
 
         plot_path = f"plots/exp_1_norm/sampled_label_error_{twin}_{CLASS}.png"
         fig.savefig(plot_path, dpi=DPI)
         plt.close(fig)
+
 
 if __name__ == "__main__":
     plot_exp(seeds=list(range(1)))

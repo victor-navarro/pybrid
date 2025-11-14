@@ -1,4 +1,4 @@
-""" Creates decent plots for experiment 2"""
+"""Creates decent plots for experiment 2"""
 
 import os
 import glob
@@ -34,7 +34,8 @@ twin_colours = {
     "swapped": "#be0119",
 }
 
-def plot_exp(seeds: List[int], delusion_epochs:int):
+
+def plot_exp(seeds: List[int], delusion_epochs: int):
     """Plot the results of experiment"""
     # Plot the twins
     twin_data = pd.DataFrame()
@@ -53,7 +54,9 @@ def plot_exp(seeds: List[int], delusion_epochs:int):
                         ),
                     ]
                 )
-    twin_data.to_csv(f"results/exp_2_norm/twin_amort_label_error_{delusion_epochs}.csv", index=False)
+    twin_data.to_csv(
+        f"results/exp_2_norm/twin_amort_label_error_{delusion_epochs}.csv", index=False
+    )
     # drop "mean" layer
     twin_data = twin_data[twin_data["layer"] != "mean"]
     # now get mean and se
@@ -68,7 +71,9 @@ def plot_exp(seeds: List[int], delusion_epochs:int):
     layers = twin_aggdata.layer.unique()
     xticks = [batches[b] for b in range(0, len(batches), 4)]
 
-    fig, ax = plt.subplots(1, len(layers), figsize=(6, 2), sharey=True, layout="constrained")
+    fig, ax = plt.subplots(
+        1, len(layers), figsize=(6, 2), sharey=True, layout="constrained"
+    )
     for i, layer in enumerate(layers):
         for twin in ["normal", "swapped"]:
             # select layer and twin
@@ -97,10 +102,14 @@ def plot_exp(seeds: List[int], delusion_epochs:int):
         ax[i].set_title(f"Layer {layer}")
         ax[i].set_xlabel("Batch")
     ax[i].legend(loc="best")
-    fig.savefig(f"plots/exp_2_norm/twin_amort_label_error_{delusion_epochs}.png", bbox_inches="tight", dpi=DPI)
+    fig.savefig(
+        f"plots/exp_2_norm/twin_amort_label_error_{delusion_epochs}.png",
+        bbox_inches="tight",
+        dpi=DPI,
+    )
 
 
 if __name__ == "__main__":
     EPOCHS = list(range(9, 50, 10)) + [0, 4]
     for epoch in EPOCHS:
-        plot_exp(list(range(8)), delusion_epochs = epoch)
+        plot_exp(list(range(8)), delusion_epochs=epoch)

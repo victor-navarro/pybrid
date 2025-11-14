@@ -1,10 +1,9 @@
-""" Creates decent plots for experiment 1"""
+"""Creates more decent plots for experiment 1"""
 
 import os
 import glob
 from typing import List
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 
 # define DPI
@@ -34,8 +33,9 @@ twin_colours = {
     "swapped": "#be0119",
 }
 
+
 def plot_exp_1(seeds: List[int]):
-    """Plot the results of experiment 1"""
+    """Plot some results of experiment 1"""
     # Plot the twins
     twin_data = pd.DataFrame()
     for twin in ["normal", "swapped"]:
@@ -68,7 +68,9 @@ def plot_exp_1(seeds: List[int]):
     layers = twin_aggdata.layer.unique()
     xticks = [batches[b] for b in range(0, len(batches), 4)]
 
-    fig, ax = plt.subplots(1, len(layers), figsize=(6, 2), layout="constrained")
+    fig, ax = plt.subplots(
+        1, len(layers), figsize=(6, 2), sharey=True, layout="constrained"
+    )
     for i, layer in enumerate(layers):
         for twin in ["normal", "swapped"]:
             # select layer and twin
@@ -97,7 +99,9 @@ def plot_exp_1(seeds: List[int]):
         ax[i].set_title(f"Layer {layer}")
         ax[i].set_xlabel("Batch")
     ax[i].legend(loc="best")
-    fig.savefig("plots/exp_1_norm/twin_amort_label_error.png", bbox_inches="tight", dpi=DPI)
+    fig.savefig(
+        "plots/exp_1_norm/twin_amort_label_error.png", bbox_inches="tight", dpi=DPI
+    )
 
 
 if __name__ == "__main__":

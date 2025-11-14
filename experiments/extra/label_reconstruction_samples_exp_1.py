@@ -1,11 +1,12 @@
-""" Makes a mosaic of images from the given pickle files. """
+"""Makes a mosaic of images from the given pickle files."""
 
 import numpy as np
-from PIL import Image, ImageFont, ImageDraw
+from PIL import Image, ImageFont
 from pybrid import datasets
 from pybrid import utils
 
 font = ImageFont.truetype("arial.ttf", 25)
+
 
 def remake_images():
     """Remake images from the given pickle files."""
@@ -26,9 +27,8 @@ def remake_images():
         # Make inference images
         imgs, _, contexts = infer_set
         img_origs = utils.postprocess_prediction(imgs)
-        
 
-        labs, _, _ =  model.test_batch(
+        labs, _, _ = model.test_batch(
             imgs,
             contexts,
             100,
@@ -38,10 +38,8 @@ def remake_images():
         # make mosaic with images (interleaved with the original images)
         preds["hybrid"].append(utils.postprocess_prediction(model.backward(labs)))
 
-
-
         # Now do the same but with the pc component alone
-        labs, _, _ =  model.test_batch(
+        labs, _, _ = model.test_batch(
             imgs,
             contexts,
             100,
@@ -51,7 +49,7 @@ def remake_images():
         preds["pc"].append(utils.postprocess_prediction(model.backward(labs)))
 
         # Now do the same but with the amort component alone
-        labs, _, _ =  model.test_batch(
+        labs, _, _ = model.test_batch(
             imgs,
             contexts,
             0,
@@ -64,6 +62,7 @@ def remake_images():
     for k in preds.keys():
         for i in range(len(preds[k])):
             preds[k][i] = np.repeat(preds[k][i][:, :, :, np.newaxis], 3, axis=3)
+
     # and the same for the original images
     img_origs = np.repeat(img_origs[:, :, :, np.newaxis], 3, axis=3)
 
@@ -81,8 +80,6 @@ def remake_images():
         img_path = f"plots/exp_1_norm/progenitor_{epoch}_mosaic_label.png"
         Image.fromarray(mosaic).save(img_path)
 
-
-
     # and now the same for the twins
     for twin in ["normal", "swapped"]:
         preds = {"hybrid": [], "pc": [], "amort": []}
@@ -95,7 +92,7 @@ def remake_images():
             model = utils.load_pkl(pkl)
 
             # Make inference images
-            labs, _, _ =  model.test_batch(
+            labs, _, _ = model.test_batch(
                 imgs,
                 contexts,
                 100,
@@ -107,7 +104,7 @@ def remake_images():
             preds["hybrid"].append(utils.postprocess_prediction(model.backward(labs)))
 
             # Now do the same but with the pc component alone
-            labs, _, _ =  model.test_batch(
+            labs, _, _ = model.test_batch(
                 imgs,
                 contexts,
                 100,
@@ -117,7 +114,7 @@ def remake_images():
 
             preds["pc"].append(utils.postprocess_prediction(model.backward(labs)))
 
-            labs, _, _ =  model.test_batch(
+            labs, _, _ = model.test_batch(
                 imgs,
                 contexts,
                 0,

@@ -1,4 +1,4 @@
-""" Creates decent plots for experiment 2"""
+"""Creates decent plots for experiment 2"""
 
 import os
 import glob
@@ -30,6 +30,7 @@ twin_colours = {
     "normal": "#000000",
     "swapped": "#be0119",
 }
+
 
 def plot_exp_2(seeds: List[int]):
     """Plot the results of experiment 2"""

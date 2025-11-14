@@ -1,4 +1,4 @@
-""" Creates decent plots for experiment 1"""
+"""Creates decent plots for experiment 2"""
 
 from typing import List
 import pandas as pd

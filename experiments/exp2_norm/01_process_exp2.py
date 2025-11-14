@@ -10,9 +10,9 @@ from pybrid import utils
 
 
 TEST_ITERS = 100
-GET_ACCURACY = False
+GET_ACCURACY = True
 DO_RECONSTRUCTION = True
-EXTRACT_FEATURES = False
+EXTRACT_FEATURES = True
 
 
 def process_exp(output_dir: str, seeds: List[int]):

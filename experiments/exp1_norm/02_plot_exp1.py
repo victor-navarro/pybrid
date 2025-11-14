@@ -1,4 +1,4 @@
-""" Creates decent plots for experiment 1"""
+"""Creates decent plots for experiment 1"""
 
 import os
 import glob
@@ -34,7 +34,8 @@ twin_colours = {
     "swapped": "#be0119",
 }
 
-def plot_exp_1(seeds: List[int]):
+
+def plot_exp_1(seeds: List[int]) -> None:
     """Plot the results of experiment 1"""
 
     # plot classification accuracy of the progenitor model

@@ -1,4 +1,4 @@
-""" Runs experiment 2 for CEMNIST. """
+"""Runs experiment 2 for c-EMNIST."""
 
 import os
 from typing import List
@@ -10,11 +10,17 @@ from pybrid import utils
 TRAIN = True
 
 
-def run_exp(output_dir: str, seeds: List[int]):
+def run_exp(output_dir: str, seeds: List[int]) -> None:
     """Run experiment 2.
 
     The twin models are trained with with amortized, unfrozen class-labels.
     They resume from the twins trained in exp1 (across different epochs)
+
+    This corresponds to the self-sustained period in our paper.
+
+    Args:
+        output_dir (str): the output directory where results are saved.
+        seeds (List[int]): list of random seeds to use.
 
     """
     base_folders = [
@@ -26,7 +32,7 @@ def run_exp(output_dir: str, seeds: List[int]):
         os.path.join(output_dir, "exp_2_norm/swapped_twin"),
     ]
     # define epochs to resume from
-    epochs = [4] + list(range(9, 50, 10))
+    epochs = [0, 4] + list(range(9, 50, 10))
 
     if TRAIN:
         for seed in seeds:

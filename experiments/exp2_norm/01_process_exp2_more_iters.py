@@ -10,13 +10,13 @@ from pybrid import utils
 
 
 TEST_ITERS = 1000
-GET_ACCURACY = False
+GET_ACCURACY = True
 DO_RECONSTRUCTION = True
 
 
 def process_exp(output_dir: str, seeds: List[int]):
-    """Process the results of experiment 2."""
-    # define the epochs (just focus on 0 and 50 delusional epochs)
+    """Process some epochs of experiment 2 with more iterations."""
+    # define the epochs (just focus on 0 and 49)
     epochs = [0, 49]
     for epoch in epochs:
 

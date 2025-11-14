@@ -12,9 +12,13 @@ TEST_ITERS = 100
 
 
 def process_exp(output_dir: str, delusion_epochs: int, seeds: List[int]):
-    """Process the results of experiment 2."""
-    normal_folder = os.path.join(output_dir, "exp_2_norm/normal_twin", str(delusion_epochs))
-    swapped_folder = os.path.join(output_dir, "exp_2_norm/swapped_twin", str(delusion_epochs))
+    """Get amortized label error for experiment 2."""
+    normal_folder = os.path.join(
+        output_dir, "exp_2_norm/normal_twin", str(delusion_epochs)
+    )
+    swapped_folder = os.path.join(
+        output_dir, "exp_2_norm/swapped_twin", str(delusion_epochs)
+    )
 
     seed_folders = []
     for seed in seeds:
@@ -29,7 +33,9 @@ def process_exp(output_dir: str, delusion_epochs: int, seeds: List[int]):
             csv_path = os.path.join(folder, f"amort_label_error/{epoch}.csv")
             # get energy
             nrg_df = post.get_amort_labels_error(
-                folder, pkl_name=mf, test_iters=TEST_ITERS,
+                folder,
+                pkl_name=mf,
+                test_iters=TEST_ITERS,
             )
             # add epoch
             nrg_df["epoch"] = epoch

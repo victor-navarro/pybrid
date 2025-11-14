@@ -1,11 +1,12 @@
-""" Makes a mosaic of images from the given pickle files. """
+"""Makes a mosaic of images from the given pickle files."""
 
 import numpy as np
-from PIL import Image, ImageFont, ImageDraw
+from PIL import Image, ImageFont
 from pybrid import datasets
 from pybrid import utils
 
 font = ImageFont.truetype("arial.ttf", 25)
+
 
 def remake_images():
     """Remake images from the given pickle files."""
@@ -26,7 +27,6 @@ def remake_images():
         # Make inference images
         imgs, _, contexts = infer_set
         img_origs = utils.postprocess_prediction(imgs)
-        
 
         _ = model.test_batch(
             imgs,
@@ -37,8 +37,6 @@ def remake_images():
         )
         # make mosaic with images (interleaved with the original images)
         preds["hybrid"].append(utils.postprocess_prediction(model.preds[-1]))
-
-
 
         # Now do the same but with the pc component alone
         _ = model.test_batch(
@@ -80,8 +78,6 @@ def remake_images():
         )
         img_path = f"plots/exp_1_norm/progenitor_{epoch}_mosaic_local.png"
         Image.fromarray(mosaic).save(img_path)
-
-
 
     # and now the same for the twins
     for twin in ["normal", "swapped"]:

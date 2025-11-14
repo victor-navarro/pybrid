@@ -1,4 +1,4 @@
-""" Makes a mosaic of images from the given pickle files. """
+"""Makes a mosaic of images from the given pickle files."""
 
 import numpy as np
 from PIL import Image
@@ -32,7 +32,7 @@ def remake_images():
             model = utils.load_pkl(pkl)
 
             # Make inference images
-            label_preds, _, _ = model.test_batch(
+            model.test_batch(
                 imgs,
                 contexts,
                 100,
@@ -59,7 +59,7 @@ def remake_images():
             Image.fromarray(infer_mosaic).save(img_name)
 
             # Make inference images
-            label_preds, _, _ = model.test_batch(
+            model.test_batch(
                 imgs,
                 contexts,
                 100,

@@ -1,4 +1,4 @@
-""" Creates decent plots for experiment 2"""
+"""Creates decent plots for experiment 2"""
 
 from typing import List
 import pandas as pd
@@ -8,8 +8,14 @@ import matplotlib.pyplot as plt
 # get a viridis colour map
 cmap = plt.get_cmap("viridis")
 # define colour palette for the three networks
-colours = {"hybrid": cmap(0.0), "pc": cmap(0.4), "amort": cmap(0.8),
-           "1": cmap(0.0), "2": cmap(0.4), "3": cmap(0.8)}
+colours = {
+    "hybrid": cmap(0.0),
+    "pc": cmap(0.4),
+    "amort": cmap(0.8),
+    "1": cmap(0.0),
+    "2": cmap(0.4),
+    "3": cmap(0.8),
+}
 # define labels for the three networks
 labels = {
     "hybrid": "Amort+Inf",
@@ -111,15 +117,15 @@ def plot_exp_2(epochs: List[int]):
     # now do the same, but for prediction errors
     twin_rec_data = pd.DataFrame()
     for ee in epochs:
-        dat = pd.read_csv(f"results/exp_2_norm/twin_amort_label_error_{ee}.csv") # last epoch of self-sustaining period
+        dat = pd.read_csv(
+            f"results/exp_2_norm/twin_amort_label_error_{ee}.csv"
+        )  # last epoch of self-sustaining period
         # remove "mean" layer
         dat = dat[dat["layer"] != "mean"]
         # select last epoch
         dat = dat[dat["epoch"] == dat["epoch"].max()]
         # calculate twin difference across seeds and layers
-        twin_diff = dat.pivot(
-            index=["seed", "layer"], columns="twin", values="error"
-        )
+        twin_diff = dat.pivot(index=["seed", "layer"], columns="twin", values="error")
         twin_diff["diff"] = twin_diff["swapped"] - twin_diff["normal"]
         # get mean and se across seeds
         twin_diff = twin_diff.groupby("layer").agg(["mean", "sem"]).reset_index()
@@ -136,7 +142,9 @@ def plot_exp_2(epochs: List[int]):
     # group by network
     twin_rec_data = twin_rec_data.set_index("layer")
     # save
-    twin_rec_data.to_csv("results/exp_2_norm/twin_error_diff_del_epochs.csv", index=False)
+    twin_rec_data.to_csv(
+        "results/exp_2_norm/twin_error_diff_del_epochs.csv", index=False
+    )
 
     # plot the twin diff data
     # Within each subplot, each network gets a different colour
@@ -170,7 +178,9 @@ def plot_exp_2(epochs: List[int]):
     # set limits
     ax.set_ylim(-0.005, 0.005)
     fig.savefig(
-        "plots/exp_2_norm/twin_amort_error_diff_del_epochs.png", bbox_inches="tight", dpi=300
+        "plots/exp_2_norm/twin_amort_error_diff_del_epochs.png",
+        bbox_inches="tight",
+        dpi=300,
     )
 
 

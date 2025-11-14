@@ -12,7 +12,12 @@ TEST_ITERS = 100
 
 
 def process_exp(output_dir: str, seeds: List[int]):
-    """Process the results of experiment 1."""
+    """Gets amortized label error for experiment 1.
+
+    Amortized label error is defined as the error obtained
+    by clamping amortized labels and performing inference.
+
+    """
     normal_folder = os.path.join(output_dir, "exp_1_norm/normal_twin")
     swapped_folder = os.path.join(output_dir, "exp_1_norm/swapped_twin")
 
@@ -29,7 +34,9 @@ def process_exp(output_dir: str, seeds: List[int]):
             csv_path = os.path.join(folder, f"amort_label_error/{epoch}.csv")
             # get energy
             nrg_df = post.get_amort_labels_error(
-                folder, pkl_name=mf, test_iters=TEST_ITERS,
+                folder,
+                pkl_name=mf,
+                test_iters=TEST_ITERS,
             )
             # add epoch
             nrg_df["epoch"] = epoch

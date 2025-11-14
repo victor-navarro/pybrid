@@ -29,7 +29,7 @@ twin_colours = {
 }
 
 
-def cka_exp(output_dir: str, seeds: List[int]):
+def cka_exp(output_dir: str, seeds: List[int]) -> None:
     """Perform CKA"""
     prog_folder = os.path.join(output_dir, "progenitor")
     normal_folder = os.path.join(output_dir, "normal_twin")
@@ -39,9 +39,11 @@ def cka_exp(output_dir: str, seeds: List[int]):
     all_ckas = pd.DataFrame()
     for seed in seeds:
         for e in [0] + list(range(4, 50, 5)):
-            pkl_names = [os.path.join(prog_folder, str(seed), "features/99.pkl"), 
-                        os.path.join(normal_folder, str(seed), f"features/{e}.pkl"), 
-                        os.path.join(swapped_folder, str(seed), f"features/{e}.pkl")]
+            pkl_names = [
+                os.path.join(prog_folder, str(seed), "features/99.pkl"),
+                os.path.join(normal_folder, str(seed), f"features/{e}.pkl"),
+                os.path.join(swapped_folder, str(seed), f"features/{e}.pkl"),
+            ]
             cka_res = do_cka(
                 feature_pkls=pkl_names,
                 model_names=model_names,
@@ -57,25 +59,31 @@ def cka_exp(output_dir: str, seeds: List[int]):
     os.makedirs(os.path.join(output_dir, "cka"), exist_ok=True)
     all_ckas.to_csv(os.path.join(output_dir, "cka", "cka_all.csv"), index=False)
 
-def plot_cka(cka_file: str, out_file: str = "cka_summary_across.png"):
+
+def plot_cka(cka_file: str, out_file: str = "cka_summary_across.png") -> None:
+    """Plot CKA results."""
     all_ckas = pd.read_csv(cka_file)
     # aggregate
-    all_ckas = all_ckas.groupby(["comparison", "network", "layer", "epoch", "batch"]).agg(
-        mean=("cka", "mean"),
-        sem=("cka", "sem"),
-    ).reset_index()
+    all_ckas = (
+        all_ckas.groupby(["comparison", "network", "layer", "epoch", "batch"])
+        .agg(
+            mean=("cka", "mean"),
+            sem=("cka", "sem"),
+        )
+        .reset_index()
+    )
 
-    fig, axes = plt.subplots(3, 3, figsize=FIG_SIZE, sharex=True,  sharey='row', layout="constrained")
+    fig, axes = plt.subplots(
+        3, 3, figsize=FIG_SIZE, sharex=True, sharey="row", layout="constrained"
+    )
     range_mins = [0.55, 0.95, 0.95]
     range_maxs = [1.01, 1.01, 1.01]
-    xlabs = (all_ckas["batch"].unique()) 
+    xlabs = all_ckas["batch"].unique()
     xticks = range(0, len(all_ckas["batch"].unique()), 4)
     xlabs = [xlabs[x] for x in xticks]
     xticks = all_ckas["batch"].unique()[xticks]
-    yticks = [[0.60, 0.80, 1.00], 
-              [1.0, 0.96, 0.96], 
-              [1.0, 0.96, 0.96]]
-    
+    yticks = [[0.60, 0.80, 1.00], [1.0, 0.96, 0.96], [1.0, 0.96, 0.96]]
+
     for layer in [0, 1, 2]:
         for j, net in enumerate(["hybrid", "pc", "amort"]):
             # get data
@@ -103,7 +111,7 @@ def plot_cka(cka_file: str, out_file: str = "cka_summary_across.png"):
                 ax.set_yticks(yticks[layer])
                 ax.set_xticks(xticks)
                 ax.set_xticklabels(xlabs)
-                ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+                ax.yaxis.set_major_formatter(FormatStrFormatter("%.2f"))
 
             if j == 0 & layer == 0:
                 ax.set_ylabel(f"Layer {3-layer}\nCKA")
@@ -133,5 +141,7 @@ if __name__ == "__main__":
     )
     if DO_CKA:
         cka_exp(output_dir="results/exp_1_norm/", seeds=list(range(8)))
-    plot_cka("results/exp_1_norm/cka/cka_all.csv",
-             out_file="plots/exp_1_norm/cka_summary_across.png")
+    plot_cka(
+        "results/exp_1_norm/cka/cka_all.csv",
+        out_file="plots/exp_1_norm/cka_summary_across.png",
+    )

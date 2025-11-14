@@ -9,11 +9,15 @@ from pybrid import utils
 
 
 TEST_ITERS = 100
-GET_ERROR = False
+GET_ERROR = True
 
 
-def process_exp(output_dir: str, seeds: List[int]):
-    """Process the results of experiment 1."""
+def process_exp(output_dir: str, seeds: List[int]) -> None:
+    """Get error from sampled labels for experiment 1.
+
+    This error is like the amortized label error, but with sampled labels instead.
+
+    """
     prog_folder = os.path.join(output_dir, "exp_1_norm/progenitor")
     normal_folder = os.path.join(output_dir, "exp_1_norm/normal_twin")
     swapped_folder = os.path.join(output_dir, "exp_1_norm/swapped_twin")
@@ -35,9 +39,11 @@ def process_exp(output_dir: str, seeds: List[int]):
                 csv_path = os.path.join(folder, f"sampled_label_error/{epoch}.csv")
                 # get energy
                 nrg_df = post.get_sampled_labels_error(
-                folder, pkl_name=mf, test_iters=TEST_ITERS, 
+                    folder,
+                    pkl_name=mf,
+                    test_iters=TEST_ITERS,
                     nsamples=2400,
-                    sample_strategy="normal"
+                    sample_strategy="normal",
                 )
                 # make directory
                 os.makedirs(os.path.dirname(csv_path), exist_ok=True)
@@ -52,4 +58,5 @@ if __name__ == "__main__":
         handlers=[logging.StreamHandler()],
     )
     os.makedirs("results", exist_ok=True)
+    # just do the first seed
     process_exp(output_dir="results", seeds=list(range(1)))

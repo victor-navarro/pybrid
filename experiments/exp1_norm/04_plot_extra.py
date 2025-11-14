@@ -1,4 +1,4 @@
-""" Creates decent plots for experiment 1"""
+"""Creates extra decent plots for experiment 1"""
 
 from typing import List
 import pandas as pd
@@ -34,7 +34,7 @@ twin_colours = {
 }
 
 
-def plot_exp_1(seeds: List[int]):
+def plot_exp_1(seeds: List[int]) -> None:
     """Extra plots for experiment 1"""
 
     # A plot of hybrid accuracy across iterations

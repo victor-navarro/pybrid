@@ -188,8 +188,8 @@ class Tanh(Activation):
 
 
 def get_mapping(
-    split: Literal["alphanumerical", "alphanumerical_rev"] = "alphanumerical",
-    map_type: Literal["by_class", "balanced"] = "balanced",
+    split: str = "alphanumerical",
+    map_type: str = "balanced",
 ) -> List[int]:
     """Return a superordinate mapping for EMNIST classes
 
@@ -212,7 +212,8 @@ def get_mapping(
             sord = [1 for i in range(10)] + [0 for i in range(26 * 2)]
         if split == "balanced":
             sord = [1 for i in range(10)] + [0 for i in range(37)]
-
+    if len(sord) == 0:
+        raise ValueError(f"Invalid split {split} or map_type {map_type}")
     return sord
 
 
@@ -319,7 +320,9 @@ def make_mosaic(
     return mosaic
 
 
-def get_infer_set(dataloader: torch.utils.data.DataLoader):
+def get_infer_set(
+    dataloader: torch.utils.data.DataLoader | List[torch.utils.data.DataLoader],
+) -> List[torch.Tensor]:
     """Get a set of images for inference
 
     Arguments:
