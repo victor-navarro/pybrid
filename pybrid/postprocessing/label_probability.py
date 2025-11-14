@@ -1,4 +1,4 @@
-""" Module to obtain label probabilities from a model and plot them."""
+"""Module to obtain label probabilities from a model and plot them."""
 
 import os
 from typing import Optional
@@ -93,7 +93,9 @@ def get_label_probability(
         full_df = pd.concat([full_df, pc_probs])
 
     # get sums again
-    full_df = full_df.groupby(["class", "iteration", "network", "label"]).sum().reset_index()
+    full_df = (
+        full_df.groupby(["class", "iteration", "network", "label"]).sum().reset_index()
+    )
     # calculate average label activation
     full_df["label_avg"] = full_df["label_sum"] / full_df["trials"]
     # relabel class
@@ -117,7 +119,12 @@ def _agg_acts(acts: np.ndarray, labels: np.ndarray) -> pd.DataFrame:
         class_dat = choices[labels == c, :]
         # now loop through the labels
         for l in range(acts.shape[-1]):
-            df = pd.DataFrame({"label_sum": (class_dat == l).sum(0), "iteration": np.arange(acts.shape[1])}) # sum across trials
+            df = pd.DataFrame(
+                {
+                    "label_sum": (class_dat == l).sum(0),
+                    "iteration": np.arange(acts.shape[1]),
+                }
+            )  # sum across trials
             df["class"] = c
             df["label"] = l
             # add number of trials

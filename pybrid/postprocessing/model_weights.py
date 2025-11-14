@@ -1,23 +1,25 @@
-""" A module to analyse weights from models"""
+"""A module to analyse weights from models"""
 
-import os
-import logging
 import itertools
-from typing import List, Optional, Literal
-import numpy as np
+from typing import List, Optional
 import pandas as pd
 import torch
 from pybrid import utils
 
 SUPPORTED_METRICS = ["l2-norm", "cos"]
 
-def compare_models(model_pkls : List[str], 
-                   model_names: Optional[List[str]] = None, 
-                   compare_weights: bool = True,
-                   compare_biases: bool = False,
-                   metrics: List[str] = ["l2-norm", "cos"]) -> pd.DataFrame:
-    """ Measure model weight differences"""
-    assert all([m in SUPPORTED_METRICS for m in metrics]), f"metric not supported, use any of {SUPPORTED_METRICS}"
+
+def compare_models(
+    model_pkls: List[str],
+    model_names: Optional[List[str]] = None,
+    compare_weights: bool = True,
+    compare_biases: bool = False,
+    metrics: List[str] = ["l2-norm", "cos"],
+) -> pd.DataFrame:
+    """Measure model weight differences"""
+    assert all(
+        [m in SUPPORTED_METRICS for m in metrics]
+    ), f"metric not supported, use any of {SUPPORTED_METRICS}"
 
     if model_names is None:
         model_names = [f"model_{i}" for i in range(len(model_pkls))]
@@ -36,7 +38,9 @@ def compare_models(model_pkls : List[str],
                 if feats is None:
                     feats = model.layers[l].bias.cpu().flatten()
                 else:
-                    feats = torch.cat([feats, model.layers[l].bias.cpu().flatten()], dim=0)
+                    feats = torch.cat(
+                        [feats, model.layers[l].bias.cpu().flatten()], dim=0
+                    )
             model_feats.append(feats)
         inf_vals.append(model_feats)
         # now the amortization network(s)
@@ -51,7 +55,9 @@ def compare_models(model_pkls : List[str],
                     if feats is None:
                         feats = model.amort_nets[i][l].bias.cpu().flatten()
                     else:
-                        feats = torch.cat([feats, model.amort_nets[i][l].bias.cpu().flatten()], dim=0)
+                        feats = torch.cat(
+                            [feats, model.amort_nets[i][l].bias.cpu().flatten()], dim=0
+                        )
                 net_feats.append(feats)
             model_feats[i] = net_feats
         amort_vals.append(model_feats)
@@ -74,9 +80,15 @@ def compare_models(model_pkls : List[str],
                 elif metric == "cos":
                     diffs = [cos(w1, w2).item() for w1, w2 in zip(m1, m2)]
                 # create a new dataframe to store the results
-                temp_res = pd.DataFrame({'value': diffs, 'metric': metric, 
-                                         'layer': list(range(len(m1))),
-                                         'comparison': pair_names[pi], 'network': 'inference'})
+                temp_res = pd.DataFrame(
+                    {
+                        "value": diffs,
+                        "metric": metric,
+                        "layer": list(range(len(m1))),
+                        "comparison": pair_names[pi],
+                        "network": "inference",
+                    }
+                )
                 results = pd.concat([results, temp_res], ignore_index=True)
             # this cycles through the number of amortization networks
             for i in range(len(amort_vals[0])):
@@ -89,9 +101,14 @@ def compare_models(model_pkls : List[str],
                     elif metric == "cos":
                         diffs = [cos(w1, w2).item() for w1, w2 in zip(m1, m2)]
                     # create a new dataframe to store the results
-                    temp_res = pd.DataFrame({'value': diffs, 'metric': metric, 
-                                             'layer': list(reversed(range(len(m1)))), # reverse levels
-                                             'comparison': pair_names[pi], 'network': f'amort_{i}'})
+                    temp_res = pd.DataFrame(
+                        {
+                            "value": diffs,
+                            "metric": metric,
+                            "layer": list(reversed(range(len(m1)))),  # reverse levels
+                            "comparison": pair_names[pi],
+                            "network": f"amort_{i}",
+                        }
+                    )
                     results = pd.concat([results, temp_res], ignore_index=True)
     return results
-
