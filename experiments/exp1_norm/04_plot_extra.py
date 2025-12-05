@@ -5,9 +5,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# define DPI
-DPI = 600
-
 # get a viridis colour map
 cmap = plt.get_cmap("viridis")
 # define colour palette for the three networks
@@ -124,9 +121,8 @@ def plot_exp_1(seeds: List[int]) -> None:
 
         # Save the plot
         fig.savefig(
-            f"plots/exp_1_norm/{mod}_hybrid_pc_accuracy.png",
+            f"plots/exp_1_norm/{mod}_hybrid_pc_accuracy.svg",
             bbox_inches="tight",
-            dpi=DPI,
         )
 
         # Now do reconstruction
@@ -208,9 +204,8 @@ def plot_exp_1(seeds: List[int]) -> None:
 
         # Save the plot
         fig.savefig(
-            f"plots/exp_1_norm/{mod}_hybrid_pc_reconstruction.png",
+            f"plots/exp_1_norm/{mod}_hybrid_pc_reconstruction.svg",
             bbox_inches="tight",
-            dpi=DPI,
         )
 
 

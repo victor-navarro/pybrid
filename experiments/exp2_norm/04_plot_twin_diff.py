@@ -110,9 +110,7 @@ def plot_exp_2(epochs: List[int]):
     # set limits
     ax.set_ylim(-0.01, 1)
     ax.set_yticks(np.arange(0, 1.25, 0.25))
-    fig.savefig(
-        "plots/exp_2_norm/twin_acc_diff_del_epochs.png", bbox_inches="tight", dpi=300
-    )
+    fig.savefig("plots/exp_2_norm/twin_acc_diff_del_epochs.svg", bbox_inches="tight")
 
     # now do the same, but for prediction errors
     twin_rec_data = pd.DataFrame()
@@ -178,9 +176,8 @@ def plot_exp_2(epochs: List[int]):
     # set limits
     ax.set_ylim(-0.005, 0.005)
     fig.savefig(
-        "plots/exp_2_norm/twin_amort_error_diff_del_epochs.png",
+        "plots/exp_2_norm/twin_amort_error_diff_del_epochs.svg",
         bbox_inches="tight",
-        dpi=300,
     )
 
 

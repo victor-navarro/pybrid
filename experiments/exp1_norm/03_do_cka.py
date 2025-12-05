@@ -8,9 +8,8 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 from pybrid.postprocessing import do_cka
 
-DPI = 600
 DO_CKA = False
-FIG_SIZE = (5.5, 3)
+FIG_SIZE = (4.25, 3)
 
 labels = {
     "hybrid": "Amort+Inf",
@@ -60,7 +59,7 @@ def cka_exp(output_dir: str, seeds: List[int]) -> None:
     all_ckas.to_csv(os.path.join(output_dir, "cka", "cka_all.csv"), index=False)
 
 
-def plot_cka(cka_file: str, out_file: str = "cka_summary_across.png") -> None:
+def plot_cka(cka_file: str, out_file: str = "cka_summary_across.svg") -> None:
     """Plot CKA results."""
     all_ckas = pd.read_csv(cka_file)
     # aggregate
@@ -121,15 +120,13 @@ def plot_cka(cka_file: str, out_file: str = "cka_summary_across.png") -> None:
                 ax.set_title(labels[net])
             if layer == 2:
                 ax.set_xlabel("Batch")
-    # add legend
-    axes[1, 2].legend(
-        loc="upper left",
-        bbox_to_anchor=(1.05, 1),
-        borderaxespad=0,
+    # add legend to bottom left panel
+    axes[2, 0].legend(
+        loc="best",
         fontsize=8,
     )
 
-    fig.savefig(out_file, dpi=DPI)
+    fig.savefig(out_file)
     plt.close(fig)
 
 
@@ -143,5 +140,5 @@ if __name__ == "__main__":
         cka_exp(output_dir="results/exp_1_norm/", seeds=list(range(8)))
     plot_cka(
         "results/exp_1_norm/cka/cka_all.csv",
-        out_file="plots/exp_1_norm/cka_summary_across.png",
+        out_file="plots/exp_1_norm/cka_summary_across.svg",
     )

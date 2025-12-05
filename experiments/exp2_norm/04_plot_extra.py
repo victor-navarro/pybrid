@@ -5,9 +5,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# define DPI
-DPI = 600
-
 # get a viridis colour map
 cmap = plt.get_cmap("viridis")
 # define colour palette for the three networks
@@ -120,9 +117,8 @@ def plot_exp_2(seeds: List[int]):
 
         # Save the plot
         fig.savefig(
-            f"plots/exp_2_norm/{mod}_hybrid_pc_accuracy_49_49_more_iters.png",
+            f"plots/exp_2_norm/{mod}_hybrid_pc_accuracy_49_49_more_iters.svg",
             bbox_inches="tight",
-            dpi=DPI,
         )
 
         # Now do reconstruction
@@ -204,9 +200,8 @@ def plot_exp_2(seeds: List[int]):
 
         # Save the plot
         fig.savefig(
-            f"plots/exp_2_norm/{mod}_hybrid_pc_reconstruction_49_49_more_iters.png",
+            f"plots/exp_2_norm/{mod}_hybrid_pc_reconstruction_49_49_more_iters.svg",
             bbox_inches="tight",
-            dpi=DPI,
         )
 
     # A plot of hybrid accuracy across iterations, at the start and the end of experiment, with 0 delusional epochs
@@ -293,9 +288,8 @@ def plot_exp_2(seeds: List[int]):
 
             # Save the plot
             fig.savefig(
-                f"plots/exp_2_norm/{mod}_hybrid_pc_accuracy_0_{epoch}_more_iters.png",
+                f"plots/exp_2_norm/{mod}_hybrid_pc_accuracy_0_{epoch}_more_iters.svg",
                 bbox_inches="tight",
-                dpi=DPI,
             )
 
             # Now do reconstruction
@@ -377,9 +371,8 @@ def plot_exp_2(seeds: List[int]):
 
             # Save the plot
             fig.savefig(
-                f"plots/exp_2_norm/{mod}_hybrid_pc_reconstruction_0_{epoch}_more_iters.png",
+                f"plots/exp_2_norm/{mod}_hybrid_pc_reconstruction_0_{epoch}_more_iters.svg",
                 bbox_inches="tight",
-                dpi=DPI,
             )
 
 

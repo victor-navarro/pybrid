@@ -7,8 +7,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# define DPI
-DPI = 600
+FIG_SIZE = (5, 2)
 
 # get a viridis colour map
 cmap = plt.get_cmap("viridis")
@@ -72,7 +71,7 @@ def plot_exp(seeds: List[int], delusion_epochs: int):
     xticks = [batches[b] for b in range(0, len(batches), 4)]
 
     fig, ax = plt.subplots(
-        1, len(layers), figsize=(6, 2), sharey=True, layout="constrained"
+        1, len(layers), figsize=FIG_SIZE, sharey=True, layout="constrained"
     )
     for i, layer in enumerate(layers):
         for twin in ["normal", "swapped"]:
@@ -103,9 +102,8 @@ def plot_exp(seeds: List[int], delusion_epochs: int):
         ax[i].set_xlabel("Batch")
     ax[i].legend(loc="best")
     fig.savefig(
-        f"plots/exp_2_norm/twin_amort_label_error_{delusion_epochs}.png",
+        f"plots/exp_2_norm/twin_amort_label_error_{delusion_epochs}.svg",
         bbox_inches="tight",
-        dpi=DPI,
     )
 
 

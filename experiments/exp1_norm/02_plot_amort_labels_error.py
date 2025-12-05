@@ -6,9 +6,6 @@ from typing import List
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# define DPI
-DPI = 600
-
 # get a viridis colour map
 cmap = plt.get_cmap("viridis")
 # define colour palette for the three networks
@@ -99,9 +96,7 @@ def plot_exp_1(seeds: List[int]):
         ax[i].set_title(f"Layer {layer}")
         ax[i].set_xlabel("Batch")
     ax[i].legend(loc="best")
-    fig.savefig(
-        "plots/exp_1_norm/twin_amort_label_error.png", bbox_inches="tight", dpi=DPI
-    )
+    fig.savefig("plots/exp_1_norm/twin_amort_label_error.svg", bbox_inches="tight")
 
 
 if __name__ == "__main__":

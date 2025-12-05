@@ -11,9 +11,10 @@ import matplotlib.patheffects as path_effects
 import numpy as np
 
 RES_FOLDER = "results/exp_1_norm"
-FIGSIZE = (3.25, 6.5)
-CMAP = "Spectral_r"
+FIGSIZE = (2.25, 4)
+CMAP = "viridis_r"
 MESH = True
+MESH_STEPS = 15
 CLASS = "4"
 LAYER = "sum"
 EPOCHS = [0, 9, 49]
@@ -33,7 +34,7 @@ colours = {
 
 # define min and max of energy to deal with weird tails
 NRG_MIN = 0.30
-NRG_MAX = 0.35
+NRG_MAX = 0.33
 # covers about 90% of the data
 
 
@@ -108,7 +109,7 @@ def plot_exp(seeds: List[int]) -> None:
                 max_error = NRG_MAX
 
             if MESH:
-                step = (pca_max - pca_min) / 30
+                step = (pca_max - pca_min) / MESH_STEPS
                 grid = [
                     np.arange(pca_min, pca_max, step),
                     np.arange(pca_min, pca_max, step),
@@ -149,7 +150,7 @@ def plot_exp(seeds: List[int]) -> None:
                     row["d2"],
                     row["name"],
                     color="white",
-                    fontsize=16,
+                    fontsize=14,
                     zorder=10,
                     ha="center",
                 )
@@ -168,8 +169,8 @@ def plot_exp(seeds: List[int]) -> None:
         cbar = fig.colorbar(mesh, ax=ax[1], orientation="vertical")
         cbar.set_label("Total Error")
 
-        plot_path = f"plots/exp_1_norm/sampled_label_error_{twin}_{CLASS}.png"
-        fig.savefig(plot_path, dpi=DPI)
+        plot_path = f"plots/exp_1_norm/sampled_label_error_{twin}_{CLASS}.svg"
+        fig.savefig(plot_path)
         plt.close(fig)
 
 

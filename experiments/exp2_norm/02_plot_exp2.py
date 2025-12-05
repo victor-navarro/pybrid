@@ -7,6 +7,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+FIG_SIZE = (5, 2)
+
 # get a viridis colour map
 cmap = plt.get_cmap("viridis")
 # define colour palette for the three networks
@@ -84,7 +86,9 @@ def plot_exp_2(seeds: List[int]):
         # The plan here is to plot the different networks in different subplots
         # Within each subplot, each twin gets a different colour
 
-        fig, ax = plt.subplots(1, 3, figsize=(6, 2), sharey=True, layout="constrained")
+        fig, ax = plt.subplots(
+            1, 3, figsize=FIG_SIZE, sharey=True, layout="constrained"
+        )
         batches = twin_acc.batch.unique()
         xticks = [batches[b] for b in range(0, len(batches), 4)]
         for i, network in enumerate(["hybrid", "pc", "amort"]):
@@ -114,9 +118,7 @@ def plot_exp_2(seeds: List[int]):
             ax[i].set_ylim(-0.01, 1)
             ax[i].set_yticks(np.arange(0, 1.25, 0.25))
         ax[0].legend(loc="best")
-        fig.savefig(
-            f"plots/exp_2_norm/twin_accuracy_{ee}.png", bbox_inches="tight", dpi=300
-        )
+        fig.savefig(f"plots/exp_2_norm/twin_accuracy_{ee}.svg", bbox_inches="tight")
 
         # plot Local Rec. Error of the twins
         twin_rec_data = pd.DataFrame()
@@ -159,7 +161,9 @@ def plot_exp_2(seeds: List[int]):
         # The plan here is to plot the different networks in different subplots
         # Within each subplot, each twin gets a different colour
 
-        fig, ax = plt.subplots(1, 3, figsize=(6, 2), sharey=True, layout="constrained")
+        fig, ax = plt.subplots(
+            1, 3, figsize=FIG_SIZE, sharey=True, layout="constrained"
+        )
         for i, network in enumerate(["hybrid", "pc", "amort"]):
             for twin in ["normal", "swapped"]:
                 twin_data = twin_rec.loc[(network, twin)]
@@ -186,9 +190,8 @@ def plot_exp_2(seeds: List[int]):
             ax[i].set_ylim(0.038, 0.12)
         ax[0].legend(loc="best")
         fig.savefig(
-            f"plots/exp_2_norm/twin_reconstruction_{ee}.png",
+            f"plots/exp_2_norm/twin_reconstruction_{ee}.svg",
             bbox_inches="tight",
-            dpi=300,
         )
 
 

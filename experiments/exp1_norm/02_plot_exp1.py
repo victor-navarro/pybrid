@@ -7,8 +7,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# define DPI
-DPI = 600
 
 # get a viridis colour map
 cmap = plt.get_cmap("viridis")
@@ -103,9 +101,7 @@ def plot_exp_1(seeds: List[int]) -> None:
     ax.set_ylim(-0.01, 1)
     ax.set_yticks(np.arange(0, 1.25, 0.25))
     os.makedirs("plots/exp_1_norm/", exist_ok=True)
-    fig.savefig(
-        "plots/exp_1_norm/progenitor_accuracy.png", bbox_inches="tight", dpi=300
-    )
+    fig.savefig("plots/exp_1_norm/progenitor_accuracy.svg", bbox_inches="tight")
 
     # plot Local Rec. Error of the progenitor model
     rec_data = pd.DataFrame()
@@ -160,9 +156,7 @@ def plot_exp_1(seeds: List[int]) -> None:
     ax.set_ylabel("Local Rec. Error")
     # set limits
     ax.set_ylim(0.00, 0.90)
-    fig.savefig(
-        "plots/exp_1_norm/progenitor_reconstruction.png", bbox_inches="tight", dpi=DPI
-    )
+    fig.savefig("plots/exp_1_norm/progenitor_reconstruction.svg", bbox_inches="tight")
 
     # Now plot the twins
     twin_acc_data = pd.DataFrame()
@@ -238,7 +232,7 @@ def plot_exp_1(seeds: List[int]) -> None:
         ax[i].set_ylim(-0.01, 1)
         ax[i].set_yticks(np.arange(0, 1.25, 0.25))
     ax[i].legend(loc="best")
-    fig.savefig("plots/exp_1_norm/twin_accuracy.png", bbox_inches="tight", dpi=DPI)
+    fig.savefig("plots/exp_1_norm/twin_accuracy.svg", bbox_inches="tight")
 
     # plot Local Rec. Error of the twins
     twin_rec_data = pd.DataFrame()
@@ -307,9 +301,7 @@ def plot_exp_1(seeds: List[int]) -> None:
         ax[i].set_xlabel("Batch")
         ax[i].set_ylim(0.05, 0.10)
     ax[i].legend(loc="best")
-    fig.savefig(
-        "plots/exp_1_norm/twin_reconstruction.png", bbox_inches="tight", dpi=DPI
-    )
+    fig.savefig("plots/exp_1_norm/twin_reconstruction.svg", bbox_inches="tight")
 
 
 if __name__ == "__main__":

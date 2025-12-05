@@ -5,10 +5,8 @@ import os
 import logging
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 from pybrid.postprocessing import compare_models
 
-DPI = 600
 DO_COMP = False
 FIG_SIZE = (6, 3)
 METRIC = "l2-norm"
@@ -22,7 +20,7 @@ labels = {
     "Swapped": "Delusional",
     "Progenitor:Normal": "Control",
     "Progenitor:Swapped": "Delusional",
-    'Normal:Swapped': "Del & Ctrl",
+    "Normal:Swapped": "Del & Ctrl",
     "inference": "Inf Network",
     "amort_0": "Digits Amort",
     "amort_1": "Letters Amort",
@@ -38,7 +36,9 @@ twin_colours = {
 
 def comp_exp(seeds: List[int]):
     """Perform weightcomp"""
-    prog_folder = os.path.join("results/exp_1_norm/progenitor") # progenitor comes from experiment 1
+    prog_folder = os.path.join(
+        "results/exp_1_norm/progenitor"
+    )  # progenitor comes from experiment 1
     normal_folder = os.path.join("results/exp_2_norm/normal_twin")
     swapped_folder = os.path.join("results/exp_2_norm/swapped_twin")
     out_dir = os.path.join("results/exp_2_norm/weightcomp")
@@ -47,17 +47,19 @@ def comp_exp(seeds: List[int]):
     all_comps = pd.DataFrame()
     for e in [0, 4] + list(range(9, 50, 10)):
         for seed in seeds:
-            pkl_names = [os.path.join(prog_folder, str(seed), "model_99.pkl"),
-                        os.path.join(normal_folder, str(e), str(seed), f"model_49.pkl"), 
-                        os.path.join(swapped_folder, str(e), str(seed), f"model_49.pkl")]
-            
+            pkl_names = [
+                os.path.join(prog_folder, str(seed), "model_99.pkl"),
+                os.path.join(normal_folder, str(e), str(seed), f"model_49.pkl"),
+                os.path.join(swapped_folder, str(e), str(seed), f"model_49.pkl"),
+            ]
+
             comps = compare_models(
-                model_pkls = pkl_names,
-                model_names = model_names,
+                model_pkls=pkl_names,
+                model_names=model_names,
             )
             # add epoch and batch
             comps["epoch"] = e
-            comps["batch"] = (e + 1) * 56 if e != 0 else 0 # The 0 is no delusion phase
+            comps["batch"] = (e + 1) * 56 if e != 0 else 0  # The 0 is no delusion phase
             # add seed
             comps["seed"] = seed
             # add to all_comps
@@ -66,34 +68,43 @@ def comp_exp(seeds: List[int]):
     os.makedirs(out_dir, exist_ok=True)
     all_comps.to_csv(os.path.join(out_dir, "weightcomp_all.csv"), index=False)
 
-def plot_comp(comp_file:str, out_file: str = "weightcomp.png"):
+
+def plot_comp(comp_file: str, out_file: str = "weightcomp.svg"):
     # read csv with weightcomp results
     all_comps = pd.read_csv(comp_file)
     # summarise
-    all_comps = all_comps.groupby(["metric", "layer", "comparison", "network", "epoch", "batch"]).agg(
-        mean=("value", "mean"),
-        sem = ("value", "sem"),
-    ).reset_index()
+    all_comps = (
+        all_comps.groupby(
+            ["metric", "layer", "comparison", "network", "epoch", "batch"]
+        )
+        .agg(
+            mean=("value", "mean"),
+            sem=("value", "sem"),
+        )
+        .reset_index()
+    )
     all_comps = all_comps[all_comps["metric"] == METRIC]
 
     # now plot the weightcomp results
     # the figure will have 2 by 3 panels
     # rows are normal-progenitor and swapped-progenitor
     # columns are the networks
-    fig, axes = plt.subplots(3, 3, figsize=FIG_SIZE, sharex=True, sharey=True, layout="constrained")
-    range_min = -.25
-    range_max = all_comps["mean"].max()+.25
-    xlabs = (all_comps["batch"].unique()) 
+    fig, axes = plt.subplots(
+        3, 3, figsize=FIG_SIZE, sharex=True, sharey=True, layout="constrained"
+    )
+    range_min = -0.25
+    range_max = all_comps["mean"].max() + 0.25
+    xlabs = all_comps["batch"].unique()
     xticks = range(0, len(all_comps["batch"].unique()), 2)
     xlabs = [xlabs[x] for x in xticks]
     xticks = all_comps["batch"].unique()[xticks]
 
-    
     for layer in [0, 1, 2]:
         for j, net in enumerate(["inference", "amort_0", "amort_1"]):
             # get data
-            dat = all_comps[(all_comps["network"] == net) & 
-                            (all_comps["layer"] == layer)]
+            dat = all_comps[
+                (all_comps["network"] == net) & (all_comps["layer"] == layer)
+            ]
             ax = axes[layer, j]
             for comp in ["Progenitor:Normal", "Progenitor:Swapped"]:
                 # get data for this comp
@@ -127,7 +138,6 @@ def plot_comp(comp_file:str, out_file: str = "weightcomp.png"):
             if layer == 2:
                 ax.set_xlabel("Batch")
 
-
     # add legend
     axes[1, 2].legend(
         loc="upper left",
@@ -136,8 +146,9 @@ def plot_comp(comp_file:str, out_file: str = "weightcomp.png"):
         fontsize=8,
     )
 
-    fig.savefig(out_file, dpi=DPI)
+    fig.savefig(out_file)
     plt.close(fig)
+
 
 if __name__ == "__main__":
     logging.basicConfig(
@@ -147,5 +158,7 @@ if __name__ == "__main__":
     )
     if DO_COMP:
         comp_exp(seeds=list(range(8)))
-    plot_comp("results/exp_2_norm/weightcomp/weightcomp_all.csv", 
-              "plots/exp_2_norm/weightcomp_summary_across.png")
+    plot_comp(
+        "results/exp_2_norm/weightcomp/weightcomp_all.csv",
+        "plots/exp_2_norm/weightcomp_summary_across.svg",
+    )

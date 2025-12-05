@@ -7,7 +7,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pybrid.postprocessing import compare_models
 
-DPI = 600
 DO_COMP = False
 FIG_SIZE = (5.5, 3)
 METRIC = "l2-norm"
@@ -70,7 +69,7 @@ def comp_exp(exp_dir: str, seeds: List[int]) -> None:
     all_comps.to_csv(os.path.join(out_dir, "weightcomp_all.csv"), index=False)
 
 
-def plot_comp(comp_file: str, out_file: str = "weightcomp.png") -> None:
+def plot_comp(comp_file: str, out_file: str = "weightcomp.svg") -> None:
     """Plot weightcomp results."""
     # read csv with weightcomp results
     all_comps = pd.read_csv(comp_file)
@@ -149,7 +148,7 @@ def plot_comp(comp_file: str, out_file: str = "weightcomp.png") -> None:
         fontsize=8,
     )
 
-    fig.savefig(out_file, dpi=DPI)
+    fig.savefig(out_file)
     plt.close(fig)
 
 
@@ -163,5 +162,5 @@ if __name__ == "__main__":
         comp_exp(exp_dir="results/exp_1_norm/", seeds=list(range(8)))
     plot_comp(
         "results/exp_1_norm/weightcomp/weightcomp_all.csv",
-        "plots/exp_1_norm/weightcomp_summary_across.png",
+        "plots/exp_1_norm/weightcomp_summary_across.svg",
     )

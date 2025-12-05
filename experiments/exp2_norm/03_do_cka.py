@@ -8,9 +8,8 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 from pybrid.postprocessing import do_cka
 
-DPI = 600
-DO_CKA = True
-FIG_SIZE = (6, 3)
+DO_CKA = False
+FIG_SIZE = (4.25, 3)
 
 labels = {
     "hybrid": "Amort+Inf",
@@ -65,7 +64,7 @@ def cka_exp(seeds: List[int]):
     all_ckas.to_csv(os.path.join(out_dir, "cka_all.csv"), index=False)
 
 
-def plot_cka(cka_file: str, out_file: str = "cka_summary_across.png"):
+def plot_cka(cka_file: str, out_file: str = "cka_summary_across.svg"):
     all_ckas = pd.read_csv(cka_file)
     # aggregate
     all_ckas = (
@@ -83,7 +82,7 @@ def plot_cka(cka_file: str, out_file: str = "cka_summary_across.png"):
     range_mins = [0.40, 0.40, 0.95]
     range_maxs = [1.01, 1.01, 1.01]
     xlabs = all_ckas["batch"].unique()
-    xticks = range(0, len(all_ckas["batch"].unique()), 2)
+    xticks = [0, 3, 6]
     xlabs = [xlabs[x] for x in xticks]
     xticks = all_ckas["batch"].unique()[xticks]
     yticks = [[0.6, 0.8, 1.0], [0.6, 0.8, 1.0], [1.0, 0.9]]
@@ -125,15 +124,14 @@ def plot_cka(cka_file: str, out_file: str = "cka_summary_across.png"):
                 ax.set_title(labels[net])
             if layer == 2:
                 ax.set_xlabel("Batch")
-    # add legend
-    axes[1, 2].legend(
-        loc="upper left",
-        bbox_to_anchor=(1.05, 1),
-        borderaxespad=0,
+
+    # add legend to bottom left panel
+    axes[2, 0].legend(
+        loc="best",
         fontsize=8,
     )
 
-    fig.savefig(out_file, dpi=DPI)
+    fig.savefig(out_file)
     plt.close(fig)
 
 
@@ -147,5 +145,5 @@ if __name__ == "__main__":
         cka_exp(seeds=list(range(8)))
     plot_cka(
         "results/exp_2_norm/cka/cka_all.csv",
-        out_file="plots/exp_2_norm/cka_summary_across.png",
+        out_file="plots/exp_2_norm/cka_summary_across.svg",
     )
