@@ -16,7 +16,8 @@ https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011280
 2. Install the required dependencies by running `pip install -r requirements.txt`.
 3. Install the pybrid package by running `pip install .` in the root folder of the cloned repository.
 
-All the experiments were run using Python 3.8.18 and pytorch 1.8.0
+All the experiments were run using Python 3.8.18 and pytorch 1.8.0.
+Recommended: Environments built on top of Python 3.11 also work well (06/26).
 
 ## Usage
 
